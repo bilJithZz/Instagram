@@ -86,26 +86,34 @@ router.post("/dislikePost",async(req,res)=>{
     }
 })
 
-router.post("/addComment",async(req,res)=>{
-    try{const commentId=req.id;
-    const {commentbody}=req.body
-    const postId=req.params.id
-    const post=await Post.findById(postId);
-   if(!commentbody){
-    res.status(202).json('write sometihng')
-   }
-   const comment= await Comment.create({
-    text,
-    auther:commentId,
-    post:postId
-   }).populate({
-    path:"author",
-    select:'username,profilePicture'
-   })
-   post.comment.push(comment._id);}
-   catch(err){
-    es.status(407).json(err)
-   }
-})
+router.post("/addComment", async (req, res) => {
+    try {
+        const commentId = req.user.id;  
+        const { commentbody } = req.body;
+        const postId = req.params.id;
+        if (!commentbody) {
+            return res.status(400).json({ message: 'Please write something' });
+        }
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+        const comment = await Comment.create({
+            text: commentbody,  
+            author: commentId,  
+            post: postId
+        });
+        await comment.populate({
+            path: "author",
+            select: 'username profilepic'  
+        }).execPopulate();
+        post.comments.push(comment._id);
+        await post.save();
+        res.status(201).json(comment);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 module.exports = router;
