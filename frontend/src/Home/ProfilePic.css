@@ -1,0 +1,75 @@
+.profile-pic-carousel {
+    margin: 20px;
+  }
+  
+  .profile-pic-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .profile-pic-item img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+    transition: transform 0.3s ease;
+  }
+  
+  .profile-pic-item p {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .profile-pic-item:hover img {
+    transform: scale(1.1);
+    border-color: #666;
+  }
+  
+  /* Slick carousel styles */
+  .slick-prev, .slick-next {
+    font-size: 0;
+    line-height: 0;
+    position: absolute;
+    top: 50%;
+    display: block;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    -webkit-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+    cursor: pointer;
+    color: transparent;
+    border: none;
+    outline: none;
+    background: transparent;
+  }
+  
+  .slick-prev:hover, .slick-next:hover,
+  .slick-prev:focus, .slick-next:focus {
+    color: transparent;
+    outline: none;
+    background: transparent;
+  }
+  
+  .slick-prev {
+    left: -25px;
+  }
+  
+  .slick-next {
+    right: -25px;
+  }
+  
+  .slick-dots li button:before {
+    font-size: 12px;
+    color: #ccc;
+  }
+  
+  .slick-dots li.slick-active button:before {
+    color: #666;
+  }
+  

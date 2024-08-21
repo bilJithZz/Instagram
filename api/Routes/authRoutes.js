@@ -71,11 +71,11 @@ authRouter.post('/login', async (req, res) => {
 });
 
 // Logout
-authRouter.post('/logout', authMiddleware, async (req, res) => {
+authRouter.get('/logout', authMiddleware, async (req, res) => {
     try {
         res.cookie('token', '', { expires: new Date(0) });
         res.status(200).json("You have logged out");
-    } catch (err) {
+    } catch (err) { 
         res.status(500).json({ error: err.message });
     }
 });
@@ -115,5 +115,32 @@ authRouter.post("/setprofile", authMiddleware, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+authRouter.post("/followo/:id",async(req,res)=>{
+    try{
+        const myId=req.id
+        const followingId=req.params.id;
+        const me=await User.findById(myId)
+        const followingUser=await User.findById(followingId)
+         
+        if(!me|| !followingUser){
+            return res.status(404).json({err:"user not found"})
+        }
+
+        if(!me.following.includes(followingId)){
+            me.following.push(followingId);
+        }
+
+        if(!followingUser.followers.includes(me)){
+            followingUser.followers.push(me)
+        }
+
+        await me.save()
+        await followingUser.save()
+
+    }catch(err){
+        res.status(500).json({ error: err.message });
+    }
+})
 
 module.exports = authRouter;

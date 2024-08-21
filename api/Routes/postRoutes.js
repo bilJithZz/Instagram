@@ -1,5 +1,5 @@
 const express = require("express");
-const Post = require("../Model/postmodel");
+const Post = require("../Model/postmodel")
 const User = require("../Model/usermodel");
 const router = express.Router();
 
@@ -116,4 +116,4 @@ router.post("/addComment", async (req, res) => {
 });
 
 
-module.exports = router;
+module.exports = postRouter;

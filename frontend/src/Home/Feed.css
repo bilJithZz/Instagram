@@ -1,0 +1,111 @@
+
+.feed {
+    margin-left: 250px; 
+    padding: 20px;
+    height: 100vh;
+  
+  }
+  
+  .feed-item {
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 10px;
+  }
+  
+  .feed-profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .feed-profile-img {
+    display: flex;
+    align-items: center;
+  }
+  
+  .feed-profile-img img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .feed-profile-img span {
+    font-weight: 500;
+  }
+ .options {
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .feed-post {
+    position: relative;
+  }
+  
+  .feed-post-img img {
+    width: 500px;
+    max-height: 600px;
+    min-height: 360px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .feed-post-like-comment {
+    display: flex;
+    gap:10px;
+    margin: 10px 0;
+  }
+  
+  .feed-post-like, .feed-post-comments {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .feeds-likes {
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .feed-post-name {
+    font-weight: 500;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .feed-post-name h4 {
+    margin: 0;
+  }
+  
+  .feed-post-name span {
+    color: #ffffff;
+    font-weight: 350;
+  }
+  
+  /* Styling for the comment input */
+  .comment-placeholder {
+    margin-top: 10px;
+  }
+  
+  .comment-placeholder input {
+    width: 100%;
+    /* padding: 10px; */
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    border: none;
+  }
+  .bookmark{
+    font-size: 26px;
+  }
+  .feed-post-comments{
+    font-size: 26px;
+  }
+  .feed-post-like{
+    font-size: 26px;
+  }
+  .feed-op{
+    display: flex;
+    justify-content: space-between;
+  }

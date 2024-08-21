@@ -1,0 +1,129 @@
+/* Container for the entire chat app */
+.chat-container {
+  display: flex;
+  height: 100vh;
+ margin-left: 260px;
+}
+
+/* Contact list styling */
+.contact-list {
+  width: 30%;
+  padding-left: 20px;
+  overflow-y: auto;
+  margin-left: 280;
+  border-right: 1px solid rgb(80, 80, 80);
+}
+.contact-list {
+  scrollbar-width: none; /* Firefox */
+}
+.chat{
+  position: fixed;
+  width: 20%;
+  
+}
+.contact-list h2 {
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contact img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.contact span {
+  font-size: 18px;
+  color: #333;
+}
+
+/* Chat area styling */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.chat-header img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chat-header span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Messages area styling */
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  max-width: 70%;
+}
+
+.chat-message p {
+  padding: 10px;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+.chat-message.sent {
+  align-self: flex-end;
+}
+
+.chat-message.received {
+  align-self: flex-start;
+}
+
+/* Input area styling */
+.chat-input {
+  display: flex;
+  padding: 20px;
+
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 50px;
+  margin-right: 10px;
+  border: none;
+  outline: 1px solid rgb(130, 130, 130);
+}
+
+.chat-input button {
+  padding: 10px 20px;
+  background-color: #009688;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.chat-input button:hover {
+  background-color: #00796b;
+}
