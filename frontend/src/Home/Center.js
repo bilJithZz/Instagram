@@ -6,8 +6,7 @@ import Feed from './Feed'
 const Center = () => {
   return (
     <div className='center-container'>
-        {/* <ProfilePic /> */}
-        <div className="center-feed">
+       <div className="center-feed">
           <Feed/>
         </div>
     </div>

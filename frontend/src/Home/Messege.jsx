@@ -5,34 +5,8 @@ const contacts = [
   { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
   { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
   { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  
-
-  
-
+  { id: 4, name: 'Emily Johnson', image: 'https://images.pexels.com/photos/4586342/pexels-photo-4586342.jpeg' },
+  { id: 5, name: 'Michael Brown', image: 'https://images.pexels.com/photos/6316610/pexels-photo-6316610.jpeg' },
 ];
 
 const ChatApp = () => {
@@ -44,7 +18,7 @@ const ChatApp = () => {
 
   const handleSelectContact = (contact) => {
     setSelectedContact(contact);
-    // For simplicity, we don't reset messages, but in a real app, you'd load messages for the selected contact
+    // Load messages for the selected contact if needed
   };
 
   const handleSendMessage = () => {
@@ -57,10 +31,7 @@ const ChatApp = () => {
   return (
     <div className="chat-container">
       <div className="contact-list">
-        <div className="chat">
-        <h2>Chats</h2> 
-        </div>
-       
+        <h2>Chats</h2>
         {contacts.map((contact) => (
           <div
             key={contact.id}

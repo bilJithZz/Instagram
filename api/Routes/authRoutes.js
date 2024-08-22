@@ -1,6 +1,6 @@
 const express = require('express');
 const authRouter = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../Model/usermodel');
 const authMiddleware = require('../MiddileWare/authMiddleware');
@@ -32,7 +32,7 @@ authRouter.post('/register', async (req, res) => {
     }
 });
 
-// Login 
+
 authRouter.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -51,7 +51,7 @@ authRouter.post('/login', async (req, res) => {
             return res.status(401).json("Invalid credentials");
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '23h' });
 
         res.status(200).json({
             token,
@@ -116,31 +116,33 @@ authRouter.post("/setprofile", authMiddleware, async (req, res) => {
     }
 });
 
-authRouter.post("/followo/:id",async(req,res)=>{
-    try{
-        const myId=req.id
-        const followingId=req.params.id;
-        const me=await User.findById(myId)
-        const followingUser=await User.findById(followingId)
-         
-        if(!me|| !followingUser){
-            return res.status(404).json({err:"user not found"})
+// Follow User
+authRouter.post("/follow/:id", authMiddleware, async (req, res) => {
+    try {
+        const myId = req.user.userId;
+        const followingId = req.params.id;
+        const me = await User.findById(myId);
+        const followingUser = await User.findById(followingId);
+
+        if (!me || !followingUser) {
+            return res.status(404).json({ error: "User not found" });
         }
 
-        if(!me.following.includes(followingId)){
+        if (!me.following.includes(followingId)) {
             me.following.push(followingId);
         }
 
-        if(!followingUser.followers.includes(me)){
-            followingUser.followers.push(me)
+        if (!followingUser.followers.includes(myId)) {
+            followingUser.followers.push(myId);
         }
 
-        await me.save()
-        await followingUser.save()
+        await me.save();
+        await followingUser.save();
 
-    }catch(err){
+        res.status(200).json({ message: "Followed successfully" });
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
-})
+});
 
 module.exports = authRouter;

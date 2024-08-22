@@ -4,17 +4,16 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa6";
 import { SlOptionsVertical } from "react-icons/sl";
 import { FaRegBookmark } from "react-icons/fa";
+import {Link} from "react-router-dom"
 
-
-
-const FeedItem = ({ profileImg, postImg, username, postText }) => (
+const FeedItem = ({id, profileImg, postImg, username, postText }) => (
   <div className="feed-item">
     <div className="feed-profile">
-      <div className="feed-profile-img">
+    <Link to="/profileid"> <div className="feed-profile-img">
         <img src={profileImg} alt="Profile" />
         <span>{username}</span>
       </div>
-     
+      </Link> 
       <div className="options"><SlOptionsVertical /></div>
     </div>
     
@@ -54,25 +53,28 @@ const FeedItem = ({ profileImg, postImg, username, postText }) => (
 
 const Feed = () => {
   const data = [
-    {
+    { id:"1",
       profileImg: "https://images.pexels.com/photos/457418/pexels-photo-457418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
       postImg: "https://images.pexels.com/photos/2305190/pexels-photo-2305190.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
       username: "harikrishnan",
       postText: "hello"
     },
     {
+      id:"2",
       profileImg: "https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg",
       postImg: "https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg",
       username: "harikrishnan",
       postText: "hello"
     },
     {
+      id:"3",
       profileImg: "https://images.pexels.com/photos/712618/pexels-photo-712618.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
       postImg: "https://images.pexels.com/photos/712618/pexels-photo-712618.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
       username: "harikrishnan",
       postText: "ellow Mini CooperBeside White Concrete Buildingding"
     },
     {
+      id:"4",
       profileImg: "https://images.pexels.com/photos/6457086/pexels-photo-6457086.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
       postImg: "https://images.pexels.com/photos/6457086/pexels-photo-6457086.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
       username: "harikrishnan",

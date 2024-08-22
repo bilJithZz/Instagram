@@ -1,67 +1,111 @@
+/* ProfileId.css */
+
 .profile-id-view {
-  margin-left: 250px; 
-  padding: 20px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  width: 80%;
+  flex-direction: column;
+  max-width: 935px;
+  margin: 0 auto;
 }
 
-.follow {
+.profile-header {
   display: flex;
-  right: 0;
-  gap: 10px;
+  padding: 16px;
+ 
+  border-bottom: 1px solid #dbdbdb;
 }
 
-.follow button {
-  padding: 10px;
-  background-color: rgb(21, 47, 87);
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  height: 40px;
-}
-
-.profile-item {
+.profile-pic {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.profile-item img {
+.profile-pic img {
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  height: 190px;
-  width: 190px;
+  border: 1px solid #dbdbdb;
 }
 
-.profile-details {
+.profile-info {
+  flex: 2;
+  margin-left: 16px;
+}
+
+.profile-username {
   display: flex;
-  margin-left: 250px;
-  margin-top: 20px;
-  height: 220px;
-  background-color: aqua;
-  border-bottom: 1px solid rgb(108, 108, 108);
+  align-items: center;
+  margin-bottom: 8px;
 }
 
-.details {
+.username {
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 16px;
+}
+
+.follow-button,
+.following-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.follow-button {
+  background-color: #0095f6;
+  color: #fff;
+}
+
+.following-button {
+  
+  border: 1px solid #dbdbdb;
+}
+
+.profile-stats {
   display: flex;
-  gap: 10px;
+  margin-bottom: 8px;
 }
 
-.details span {
-  font-weight: 500; 
-  font-size: 22px;
+.profile-stats span {
+  margin-right: 16px;
+  font-size: 14px;
 }
 
-.follows {
-  display: flex;
-  gap: 25px;
+.profile-bio {
+  margin-bottom: 8px;
 }
 
-.details1 {
-  margin-left: 80px;
-  width: 450px;
-  display: flex;
-  flex-direction: column;
-  gap:20px
+.bio-username {
+  font-weight: bold;
+}
+
+.bio-description {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.profile-hashtags {
+  margin-top: 8px;
+}
+
+.profile-hashtags p {
+  color: #0095f6;
+}
+
+.profile-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+  padding: 16px;
+
+}
+
+.post img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
 }

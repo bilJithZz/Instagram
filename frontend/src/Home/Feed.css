@@ -1,6 +1,6 @@
 
 .feed {
-    margin-left: 250px; 
+    margin-left: 100px; 
     padding: 20px;
     height: 100vh;
   
@@ -65,6 +65,7 @@
   .feeds-likes {
     font-weight: 600;
     margin-bottom: 10px;
+    
   }
   
   .feed-post-name {

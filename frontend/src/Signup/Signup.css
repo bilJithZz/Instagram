@@ -1,4 +1,139 @@
-.insta-signup{
-    width: 40%;
-    margin: auto;
-}
+body {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .register-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .register-container {
+    width: 350px;
+    padding: 20px;
+    border: 1px solid #dbdbdb;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .register-logo img {
+    width: 175px;
+    margin-bottom: 20px;
+  }
+  
+  .register-heading {
+    font-size: 17px;
+    color: #8e8e8e;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  
+  .register-facebook {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-facebook img {
+    width: 20px;
+    margin-right: 10px;
+  }
+  
+  .register-facebook:hover {
+    background-color: #0077cc;
+  }
+  
+  .register-divider {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+  }
+  
+  .register-divider span {
+    flex: 1;
+    height: 1px;
+    position: relative;
+  }
+  
+  .register-divider span:before {
+    content: "OR";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0 10px;
+    color: #8e8e8e;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .register-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .register-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    background-color: #fafafa;
+  }
+  
+  .register-form button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-form button:hover {
+    background-color: #0077cc;
+  }
+  
+  .register-terms {
+    font-size: 12px;
+    color: #8e8e8e;
+    margin-top: 20px;
+  }
+  
+  .register-terms a {
+    color: #00376b;
+    text-decoration: none;
+  }
+  
+  .login-container {
+    width: 350px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #dbdbdb;
+  }
+  
+  .login-container p {
+    font-size: 14px;
+  }
+  
+  .login-container a {
+    color: #0095f6;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  

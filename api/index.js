@@ -1,18 +1,39 @@
-const express=require ("express")
-const app=express()
-const mongoose=require("mongoose")
-const PORT=5000;
-const post=require("./Routes/postRoutes")
-const authRouter=require("./Routes/authRoutes")
-const postRouter=require("./Routes/postRoutes")
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require('cors');
 
-mongoose.connect("mongodb://127.0.0.1:27017/Insta",)
+dotenv.config();
 
-app.use(express.json())
+const app = express();
+const PORT = process.env.PORT || 5000;
+const postRouter = require("./Routes/postRoutes");
+const authRouter = require("./Routes/authRoutes");
 
-app.use("/api/user",authRouter)
-app.use("/api/post",postRouter)
 
-app.listen(PORT,()=>{
-    console.log(`connnected to port${PORT}`)
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 })
+.then(() => console.log("Connected to MongoDB"))
+.catch(err => console.error("Could not connect to MongoDB", err));
+
+
+
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(express.json());
+
+
+app.use("/api/user", authRouter);
+app.use("/api/post", postRouter);
+
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something went wrong!" });
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
