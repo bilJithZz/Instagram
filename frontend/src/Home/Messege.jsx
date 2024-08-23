@@ -18,7 +18,7 @@ const ChatApp = () => {
 
   const handleSelectContact = (contact) => {
     setSelectedContact(contact);
-    // Load messages for the selected contact if needed
+    
   };
 
   const handleSendMessage = () => {

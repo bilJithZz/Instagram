@@ -6,12 +6,13 @@ import Home from './Home/Home';
 import Messege from './Home/Messege';
 import Layout from './Layout/Layout';
 import ProfileId from './Home/ProfileId';
-import indProfile from './Home/indProfile';
 import SignIn from './Signin/signin';
 import CreatePost from "./Home/CreatePost"
 
 
+
 function App() {
+
   return (
     <div className="App">
       <Routes>
@@ -23,7 +24,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/messege" element={<Messege />} />
-          <Route path="/profileid" element={<ProfileId />} />
+          <Route path="/getpost/:id" element={<ProfileId />} />
           <Route path="/profile" element={<indProfile />} />
           
         </Route>
@@ -33,3 +34,8 @@ function App() {
 }
 
 export default App;
+
+
+// const { id } = useParams();
+// const numericProductId = parseInt(id, 10);
+// const product = useSelector((state) => selectProductById(state, numericProductId));

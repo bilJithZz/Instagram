@@ -1,28 +1,28 @@
 const express = require("express");
 const Post = require("../Model/postmodel");
 const User = require("../Model/usermodel");
-const Comment = require("../Model/commentmodel"); // Assuming there's a Comment model
-const authMiddleware = require('../MiddileWare/authMiddleware'); // Middleware for authentication
+const Comment = require("../Model/commentmodel"); 
+const authMiddleware = require('../MiddileWare/authMiddleware');
 const router = express.Router();
 const path = require("path");
 const multer = require('multer');
 
-// Define the storage configuration for multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "Images"); // Ensure the 'Images' directory exists or handle its creation
+        cb(null, "Images"); 
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Fixed 'orginalname' to 'originalname'
+        cb(null, Date.now() + path.extname(file.originalname)); 
     }
 });
-const upload = multer({ storage }); // Use 'storage' instead of 'dest'
+const upload = multer({ storage }); 
 
-// Create Post
 
 router.post("/createpost", upload.single("image"), authMiddleware, async (req, res) => {
     try {
-        const { content, authorId } = req.body;
+        console.log( req.user)
+        const { content,  } = req.body;
+        const authorId = req.user.userId;
         const picture = req.file;
 
         if (!picture) {
@@ -48,8 +48,7 @@ router.post("/createpost", upload.single("image"), authMiddleware, async (req, r
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Populate author field in the response
-        // await savedPost.populate({ path: 'author', select: "-password" }).execPopulate();
+        
         res.status(201).json({ message: "New post added", post: savedPost });
     } catch (err) {
         console.error("Error creating post:", err);
@@ -57,7 +56,6 @@ router.post("/createpost", upload.single("image"), authMiddleware, async (req, r
     }
 });
 
-// Get All Posts
 router.get("/getallposts", async (req, res) => {
     try {
         const allPosts = await Post.find().sort({ createdAt: -1 }).populate({ path: 'author', select: "-password" });
@@ -68,7 +66,7 @@ router.get("/getallposts", async (req, res) => {
 });
 
 // Get Individual Posts
-router.get("/getindividualposts", authMiddleware, async (req, res) => {
+router.get("/getpost/:id", authMiddleware, async (req, res) => {
     try {
         const authorId = req.user.userId;
         const individualPosts = await Post.find({ author: authorId }).sort({ createdAt: -1 }).populate({ path: 'author', select: "-password" });

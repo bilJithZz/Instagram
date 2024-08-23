@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import "./CreatePost.css";
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; 
 
 const NewPost = () => {
   const [image, setImage] = useState(null);
-  const [caption, setCaption] = useState('');
+  const [content, setCaption] = useState('');
+  const navigate=useNavigate()
 
   
   const token = useSelector(state => state.auth.token);
@@ -23,7 +25,7 @@ const NewPost = () => {
    
     const formData = new FormData();
     formData.append('image', image); 
-    formData.append('caption', caption);
+    formData.append('content', content);
 
     try {
       const response = await axios.post(
@@ -37,8 +39,12 @@ const NewPost = () => {
           withCredentials: true 
         }
       );
-
-      console.log('Response:', response.data);
+ if(response.status===201)
+ {
+  console.log('Response:', response.data);
+  navigate('/');
+ }
+      
     } catch (err) {
       console.error('Error uploading post:', err);
     }
@@ -60,7 +66,7 @@ const NewPost = () => {
           </div>
           <textarea
             placeholder="Write a caption..."
-            value={caption}
+            value={content}
             onChange={(e) => setCaption(e.target.value)}
             className="caption-input"
           />

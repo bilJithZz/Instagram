@@ -16,7 +16,7 @@ const Sidebar = () => {
         <li><Film /> Reels</li>
         <Link to="/createpost" className="sidebar-link"><li><CirclePlus /> Create</li></Link>
         <li><Heart /> Notifications</li>
-        <Link to="/profileid" className="sidebar-link"><li><User /> Profile</li></Link>
+        <Link to="/getpost/:id" className="sidebar-link"><li><User /> Profile</li></Link>
       </ul>
       <div className="sidebar-logout">
         <span><LogOut /> Logout</span>
