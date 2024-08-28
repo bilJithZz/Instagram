@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
+import axiosInstance from './axiosinstance'; // Adjust the path as needed
 import './Messege.css';
 
 const contacts = [
@@ -10,23 +12,67 @@ const contacts = [
 ];
 
 const ChatApp = () => {
+  const [userId, setUserId] = useState(null);
   const [selectedContact, setSelectedContact] = useState(contacts[0]);
-  const [messages, setMessages] = useState([
-    { from: 'Harikrishna', text: 'Hello!' },
-  ]);
+  const [messages, setMessages] = useState([]);
+
   const [newMessage, setNewMessage] = useState('');
+  console.log(newMessage)
+  const socket = useRef(null);
+
+  useEffect(() => {
+    
+    const fetchUserId = async () => {
+      try {
+        const response = await axiosInstance.get('/me');
+        setUserId(response.data.id);
+      } catch (error) {
+        console.error('Error fetching user ID:', error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      socket.current = io('http://localhost:5000', {
+        query: { userId },
+      });
+
+      socket.current.on('newMessage', (message) => {
+        if (message.receiverId === userId || message.senderId === userId) {
+          setMessages((prevMessages) => [...prevMessages, message]);
+        }
+      });
+
+      return () => {
+        socket.current.off('newMessage');
+        socket.current.disconnect();
+      };
+    }
+  }, [userId]);
 
   const handleSelectContact = (contact) => {
     setSelectedContact(contact);
-    
   };
 
   const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
-      setMessages([...messages, { from: 'Me', text: newMessage }]);
+    if (newMessage.trim() !== '' && socket.current) {
+      const message = {
+        senderId: userId,
+        receiverId: selectedContact.id,
+        content: newMessage,
+      };
+
+      socket.current.emit('sendMessage', message);
       setNewMessage('');
     }
   };
+
+  if (!userId) {
+    return <div>Loading...</div>; 
+  }
 
   return (
     <div className="chat-container">
@@ -51,11 +97,16 @@ const ChatApp = () => {
         </div>
 
         <div className="chat-messages">
-          {messages.map((message, index) => (
-            <div key={index} className={`chat-message ${message.from === 'Me' ? 'sent' : 'received'}`}>
-              <p>{message.text}</p>
-            </div>
-          ))}
+          {messages
+            .filter(message =>
+              (message.senderId === userId || message.receiverId === userId) &&
+              (message.senderId === selectedContact.id || message.receiverId === selectedContact.id)
+            )
+            .map((message, index) => (
+              <div key={index} className={`chat-message ${message.senderId === userId ? 'sent' : 'received'}`}>
+                <p>{message.content}</p>
+              </div>
+            ))}
         </div>
 
         <div className="chat-input">

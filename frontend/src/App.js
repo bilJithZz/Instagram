@@ -3,15 +3,18 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Signup from './Signup/Signup';
 import Home from './Home/Home';
-import Messege from './Home/Messege';
+import Message from './Home/Message'
 import Layout from './Layout/Layout';
 import ProfileId from './Home/ProfileId';
 import SignIn from './Signin/signin';
 import CreatePost from "./Home/CreatePost"
+import {io} from "socket.io-client"
 
 
 
 function App() {
+
+      
 
   return (
     <div className="App">
@@ -23,7 +26,7 @@ function App() {
 
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/messege" element={<Messege />} />
+          <Route path="/message" element={<Message />} />
           <Route path="/getpost/:id" element={<ProfileId />} />
           <Route path="/profile" element={<indProfile />} />
           
@@ -36,6 +39,3 @@ function App() {
 export default App;
 
 
-// const { id } = useParams();
-// const numericProductId = parseInt(id, 10);
-// const product = useSelector((state) => selectProductById(state, numericProductId));

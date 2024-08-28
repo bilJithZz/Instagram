@@ -8,6 +8,7 @@ import { setAuthUser } from '../Redux/dataSlice';
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(''); // To handle and display errors
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,15 +27,14 @@ const SignIn = () => {
       );
 
       if (response.status === 200) {
-       
         const { user, token } = response.data;
-      
+        window.localStorage.setItem("isLogedIn", true); // Corrected local storage usage
+        window.localStorage.setItem("token", token); // Store the token for authenticated requests
         dispatch(setAuthUser({ user, token }));
-
-       
         navigate('/'); 
       }
     } catch (err) {
+      setError('Login failed. Please check your username and password.');
       console.error('Login failed:', err.response ? err.response.data : err.message);
     }
   };
@@ -61,6 +61,7 @@ const SignIn = () => {
             required
           />
           <button type="submit">Log In</button>
+          {error && <p className="login-error">{error}</p>} {/* Display error message */}
         </form>
         <div className="login-divider">
           <span>OR</span>

@@ -3,25 +3,30 @@ import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import './Feed.css';
 import { FaRegHeart, FaRegBookmark, FaRegComment } from 'react-icons/fa';
-import { SlOptionsVertical } from 'react-icons/sl';
+import { SlOptions } from "react-icons/sl";
 import { Link } from 'react-router-dom';
-import { fetchPosts } from '../Redux/postSlice';
-import { selectAllPosts } from '../Redux/postSlice';
-import { selectPostById } from '../Redux/postSlice';
+import { fetchPosts,  updatePost } from '../Redux/postSlice';
+import {selectAllPosts} from "../Redux/postSlice"
+
 
 const FeedItem = ({ id, profileImg, postImg, username, postText, userId, post }) => {
-  const [liked, setLiked] = useState(post.likes.includes(userId));
-
-  const post1 = useSelector((state) => selectPostById(state));
+  const dispatch = useDispatch();
+  const [liked, setLiked] = useState("");
 
   const handleLike = async () => {
     try {
+      const postId = post;
+     console.log(postId)
+     console.log(post)
       if (liked) {
-        await axios.patch(`/api/posts/${post._id}/unlike`);
+        await axios.post(`http://localhost:5000/api/post/likePost/${id}`);
+        post.likes.length=post.likes.length+1
+        console.log( post.likes.length)
       } else {
-        await axios.patch(`/api/posts/${post._id}/like`);
+        await axios.post(`http://localhost:5000/api/post/dislikePost/${id}`);
       }
       setLiked(!liked);
+      // dispatch(updatePost({ ...post, likes: liked ? post.likes.filter(like => like !== userId) : [...post.likes, userId] }));
     } catch (error) {
       console.error('Error liking/unliking the post:', error);
     }
@@ -30,14 +35,15 @@ const FeedItem = ({ id, profileImg, postImg, username, postText, userId, post })
   return (
     <div className="feed-item">
       <div className="feed-profile">
-        <Link to={`/getpost/${post1.author?._id}`}>
+        <Link to={`/getpost/${post.author?._id}`}>
           <div className="feed-profile-img">
             <img src={profileImg} alt="Profile" />
             <span>{username}</span>
           </div>
         </Link>
         <div className="options">
-          <SlOptionsVertical />
+       
+        <SlOptions />
         </div>
       </div>
 
@@ -86,7 +92,6 @@ const Feed = () => {
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchPosts());
-      
     }
   }, [status, dispatch]);
 
@@ -95,21 +100,25 @@ const Feed = () => {
   if (status === 'loading') {
     content = <p>Loading...</p>;
   } else if (status === 'succeeded') {
-    if (1> 0) {
+    if (posts.length > 0) {
       content = (
         <div className="feed">
-          { posts && posts.map((item) => (
-            <FeedItem
-              key={item._id}
-              id={item.author?._id || 'unknown'}
-              profileImg={item.author?.profilepic || ''}
-              postImg={item.picture || ''}
-              username={item.author?.username || 'Unknown User'}
-              postText={item.caption || ''}
-              post={item}
-              userId={userId}
-            />
-          ))}
+          {posts.map((item) => {
+          
+            const imageUrl = item.picture.replace(/^Images\\/,'');
+            return (
+              <FeedItem
+                key={item._id}
+                id={item._id}
+                profileImg={item.author?.profilepic || 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'}
+                postImg={`http://localhost:5000/${imageUrl}`}
+                username={item.author?.username || 'Unknown User'}
+                postText={item.caption || ''}
+                post={item}
+                userId={userId}
+              />
+            );
+          })}
         </div>
       );
     } else {

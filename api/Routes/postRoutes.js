@@ -7,21 +7,21 @@ const router = express.Router();
 const path = require("path");
 const multer = require('multer');
 
+// Configure multer storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "Images"); 
+        cb(null, path.join(__dirname, "..", "Images")); // Use path.join to handle path separators
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); 
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 const upload = multer({ storage }); 
 
-
+// Create a post
 router.post("/createpost", upload.single("image"), authMiddleware, async (req, res) => {
     try {
-        console.log( req.user)
-        const { content,  } = req.body;
+        const { content } = req.body;
         const authorId = req.user.userId;
         const picture = req.file;
 
@@ -32,30 +32,27 @@ router.post("/createpost", upload.single("image"), authMiddleware, async (req, r
         const post = new Post({
             caption: content,
             author: authorId,
-            picture: picture.path
+            picture: picture.path.replace(/\\/g, '/') // Convert Windows path separators to Unix
         });
 
         const savedPost = await post.save();
-
         const user = await User.findById(authorId);
-       
+
         if (user) {
             user.posts.push(post._id);
             await user.save();
-            console.log(user)
         } else {
-            console.log("Cannot find the user with id:", authorId);
             return res.status(404).json({ message: "User not found" });
         }
 
-        
         res.status(201).json({ message: "New post added", post: savedPost });
     } catch (err) {
         console.error("Error creating post:", err);
-        res.status(509).json({ err});
+        res.status(500).json({ error: err.message });
     }
 });
 
+// Get all posts
 router.get("/getallposts", async (req, res) => {
     try {
         const allPosts = await Post.find().sort({ createdAt: -1 }).populate({ path: 'author', select: "-password" });
@@ -65,22 +62,25 @@ router.get("/getallposts", async (req, res) => {
     }
 });
 
-// Get Individual Posts
+// Get individual posts by author
 router.get("/getpost/:id", authMiddleware, async (req, res) => {
     try {
-        const authorId = req.user.userId;
+        const authorId = req.params.id;
+        console.log(authorId)
         const individualPosts = await Post.find({ author: authorId }).sort({ createdAt: -1 }).populate({ path: 'author', select: "-password" });
         res.status(200).json({ individualPosts, success: true });
+
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 });
 
-// Like Post
+// Like a post
 router.post("/likePost/:id", authMiddleware, async (req, res) => {
     try {
         const userId = req.user.userId;
         const postId = req.params.id;
+        console.log(userId)
         const likedPost = await Post.findById(postId);
 
         if (!likedPost) {
@@ -99,11 +99,11 @@ router.post("/likePost/:id", authMiddleware, async (req, res) => {
     }
 });
 
-// Dislike Post
+// Dislike a post
 router.post("/dislikePost/:id", authMiddleware, async (req, res) => {
     try {
         const userId = req.user.userId;
-        const postId = req.params.id;
+        const postId = params.id; 
         const dislikedPost = await Post.findById(postId);
 
         if (!dislikedPost) {
@@ -122,7 +122,7 @@ router.post("/dislikePost/:id", authMiddleware, async (req, res) => {
     }
 });
 
-// Add Comment
+// Add comment to a post
 router.post("/addComment/:id", authMiddleware, async (req, res) => {
     try {
         const userId = req.user.userId;
