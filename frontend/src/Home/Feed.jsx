@@ -5,28 +5,48 @@ import './Feed.css';
 import { FaRegHeart, FaRegBookmark, FaRegComment } from 'react-icons/fa';
 import { SlOptions } from "react-icons/sl";
 import { Link } from 'react-router-dom';
-import { fetchPosts,  updatePost } from '../Redux/postSlice';
-import {selectAllPosts} from "../Redux/postSlice"
+import { fetchPosts, selectAllPosts } from '../Redux/postSlice';
 
-
-const FeedItem = ({ id, profileImg, postImg, username, postText, userId, post }) => {
+const FeedItem = ({ id, profileImg, postImg, username, postText, post }) => {
   const dispatch = useDispatch();
-  const [liked, setLiked] = useState("");
+  const [liked, setLiked] = useState(false);
+  const token = useSelector(state => state.auth.token);
+  const userId = useSelector(state => state.auth.userId);
+
+  useEffect(() => {
+    setLiked(post.likes.includes(userId));
+  }, [post.likes, userId]);
 
   const handleLike = async () => {
     try {
-      const postId = post;
-     console.log(postId)
-     console.log(post)
-      if (liked) {
-        await axios.post(`http://localhost:5000/api/post/likePost/${id}`);
-        post.likes.length=post.likes.length+1
-        console.log( post.likes.length)
-      } else {
-        await axios.post(`http://localhost:5000/api/post/dislikePost/${id}`);
+      const postId = post._id;
+      console.log(postId)
+      console.log(post)
+      console.log(token)
+
+      let response;
+      if (!liked) {  
+        response = await axios.post(`http://localhost:5000/api/post/likePost/${postId}`, {}, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        console.log("hello")
+      } else {  
+        response = await axios.post(`ttp://localhost:5000/api/post/dislikePost/${postId}`, {},  {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
       }
-      setLiked(!liked);
-      // dispatch(updatePost({ ...post, likes: liked ? post.likes.filter(like => like !== userId) : [...post.likes, userId] }));
+
+      if (response.headers['content-type'].includes('application/json')) {
+        setLiked(!liked);  
+      } else {
+        console.error('Expected JSON response but got:', response.headers['content-type']);
+      }
     } catch (error) {
       console.error('Error liking/unliking the post:', error);
     }
@@ -42,8 +62,7 @@ const FeedItem = ({ id, profileImg, postImg, username, postText, userId, post })
           </div>
         </Link>
         <div className="options">
-       
-        <SlOptions />
+          <SlOptions />
         </div>
       </div>
 
@@ -87,7 +106,6 @@ const Feed = () => {
   const posts = useSelector(selectAllPosts);
   const status = useSelector((state) => state.posts.status);
   const error = useSelector((state) => state.posts.error);
-  const userId = useSelector((state) => state.auth.userId);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -104,8 +122,7 @@ const Feed = () => {
       content = (
         <div className="feed">
           {posts.map((item) => {
-          
-            const imageUrl = item.picture.replace(/^Images\\/,'');
+            const imageUrl = item.picture.replace(/^Images\\/, '');
             return (
               <FeedItem
                 key={item._id}
@@ -115,7 +132,6 @@ const Feed = () => {
                 username={item.author?.username || 'Unknown User'}
                 postText={item.caption || ''}
                 post={item}
-                userId={userId}
               />
             );
           })}
