@@ -59,7 +59,7 @@ const Sidebar = () => {
         <Link to="/createpost" className="sidebar-link">
           <li><CirclePlus /> Create</li>
         </Link>
-        <li><Heart /> Notifications</li>
+          <Link to="/notification " className="sidebar-link"> <li><Heart /> Notifications</li></Link>
         <li className="sidebar-link" onClick={goToUserProfile}>
           <User /> Profile
         </li>

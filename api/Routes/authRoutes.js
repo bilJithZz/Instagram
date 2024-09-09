@@ -119,7 +119,6 @@ authRouter.post("/setprofile", authMiddleware, async (req, res) => {
 // Get User Info
 authRouter.get('/me', authMiddleware, (req, res) => {
     const userId = req.user.userId; 
-    console.log(`hello: ${userId}`)
     res.status(200).json({ id: userId });
 });
 
@@ -152,6 +151,7 @@ authRouter.post("/follow/:id", authMiddleware, async (req, res) => {
     }
 });
 
+// Unfollow User
 authRouter.post("/unfollow/:id", authMiddleware, async (req, res) => {
     try {
         const myId = req.user.userId;
@@ -163,11 +163,10 @@ authRouter.post("/unfollow/:id", authMiddleware, async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
 
-       
         if (me.following.includes(unfollowingId)) {
             me.following = me.following.filter(id => id.toString() !== unfollowingId);
         }
-      
+
         if (unfollowingUser.followers.includes(myId)) {
             unfollowingUser.followers = unfollowingUser.followers.filter(id => id.toString() !== myId);
         }
@@ -181,5 +180,21 @@ authRouter.post("/unfollow/:id", authMiddleware, async (req, res) => {
     }
 });
 
+// Get All Users
+authRouter.get('/getAlluser', authMiddleware, async (req, res) => {
+    try {
+         
+        const user = await User.find().select('-password'); 
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, user });
+    } catch (err) {
+        console.error('Error fetching user:', err);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
 
 module.exports = authRouter;

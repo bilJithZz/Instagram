@@ -1,11 +1,11 @@
-import React from 'react'
+// import React from 'react'
 
-const indProfile = () => {
-  return (
-    <div>
-        <h1>hii</h1>
-    </div>
-  )
-}
+// const indProfile = () => {
+//   return (
+//     <div>
+//         <h1>hii</h1>
+//     </div>
+//   )
+// }
 
-export default indProfile
+// export default indProfile

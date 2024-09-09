@@ -1,19 +1,33 @@
 const express = require('express');
-const router = express.Router(); 
-const Chat = require('../Model/chatmodel'); 
+const router = express.Router();
+const authMiddleware = require('../MiddileWare/authMiddleware');
+const Chat = require('../Model/chatmodel');
 const Message = require('../Model/messagemodel');
+const { io } = require('../Socket/Socket'); // Ensure the path to your Socket.io instance is correct
 
 // Send a message
-router.post('/sendMessage', async (req, res) => {
+router.post('/sendMessage', authMiddleware, async (req, res) => {
     try {
-        const sendingId = req.user.id; // Assuming req.user is set by auth middleware
-        const receivingId = req.body.receivingId;
-        const { message } = req.body;
+       
+        const sendingId = req.body.senderId;
+        const receivingId = req.body.receiverId
+        const message=req.body.content;
+        console.log({"M":req.body})
+        
 
-        // Find or create a chat
+        if (!receivingId || !message) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing required fields'
+            });
+        }
+
+      
         let chat = await Chat.findOne({
             participants: { $all: [sendingId, receivingId] }
         });
+
+
 
         if (!chat) {
             chat = await Chat.create({
@@ -21,25 +35,33 @@ router.post('/sendMessage', async (req, res) => {
             });
         }
 
-        // Create a new message
+       
         const newMessage = await Message.create({
             senderId: sendingId,
             receiverId: receivingId,
             content: message
         });
 
-        chat.messages.push(newMessage._id); 
+     
+        chat.messages.push(newMessage._id);
         await chat.save();
 
+     
         res.status(201).json({
             success: true,
             message: newMessage
         });
+
+      
+        if (io) {
+            io.emit('newMessage', newMessage);
+        }
+
     } catch (err) {
-        console.error(err);
+        console.error('Error sending message:', err);
         res.status(500).json({
             success: false,
-            error: err.message
+            error: 'Internal Server Error'
         });
     }
 });

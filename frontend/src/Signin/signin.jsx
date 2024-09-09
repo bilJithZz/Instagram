@@ -28,9 +28,12 @@ const SignIn = () => {
 
       if (response.status === 200) {
         const { user, token } = response.data;
-        window.localStorage.setItem("isLogedIn", true); // Corrected local storage usage
-        window.localStorage.setItem("token", token); // Store the token for authenticated requests
+        // Persist token and login status in localStorage
+        localStorage.setItem("isLogedIn", true);
+        localStorage.setItem("token", token);
+        // Update Redux state with user information
         dispatch(setAuthUser({ user, token }));
+        // Redirect to home page or any other route
         navigate('/'); 
       }
     } catch (err) {

@@ -3,15 +3,14 @@
 .profile-id-view {
   display: flex;
   flex-direction: column;
-  max-width: 935px;
-  margin: 0 auto;
+  max-width: 700px;
+ margin-left: 260px;
 }
 
 .profile-header {
   display: flex;
   padding: 16px;
- 
-  border-bottom: 1px solid #dbdbdb;
+  border-bottom: 1px solid #5b5b5b;
 }
 
 .profile-pic {
@@ -46,7 +45,7 @@
 }
 
 .follow-button,
-.following-button {
+.following-button,.message-button {
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
@@ -55,8 +54,12 @@
   margin-right: 8px;
 }
 
-.follow-button {
+.follow-button ,.message-button{
   background-color: #0095f6;
+  color: #fff;
+}
+.message-button{
+  background-color: #252525;
   color: #fff;
 }
 
@@ -105,7 +108,8 @@
 }
 
 .post img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
+  width: 212px;
+  height: 240px;
+  border-radius: 0px;
+  object-fit: cover;
 }

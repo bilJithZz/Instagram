@@ -2,12 +2,12 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const authMiddleware = (req, res, next) => {
-    // Extract the Authorization header
+
     const authHeader = req.header('Authorization');
 
     console.log('Authorization Header:', authHeader);
 
-    // Extract the token from the header
+
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
     console.log('Extracted Token:', token);
@@ -17,10 +17,8 @@ const authMiddleware = (req, res, next) => {
     }
 
     try {
-        // Verify the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Attach decoded user information to request object
         req.user = decoded;
 
         next();

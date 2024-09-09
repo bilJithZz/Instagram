@@ -34,7 +34,7 @@ const ProfileIdView = () => {
 
         const data = profileResponse.data.individualPosts; 
   
-
+        console.log({"data":data})
        
         const postsList = data.map(post => ({
           id: post._id,
@@ -108,7 +108,7 @@ const ProfileIdView = () => {
             <button className="follow-button" onClick={handleFollowToggle}>
               {isFollow ? 'Following' : 'Follow'}
             </button>
-            <button className="message-button">Message</button> 
+            <button className="message-button">Edit-Profile</button> 
           </div>
           <div className="profile-stats">
             <span><strong>{profileData.posts}</strong> posts</span>
@@ -130,14 +130,14 @@ const ProfileIdView = () => {
         {profileData.postsList.length > 0 ? (
           profileData.postsList.map((post) => {
            
-            const imageUrl = post.picture.replace(/^Images\\/, '');
+            const imageUrl = post.picture.replace(/Images/, '');
             return (
               <div key={post.id} className="post">
                 <img 
                   src={`http://localhost:5000/${imageUrl}`} 
                   alt={post.caption}
                 />
-                <p>{post.caption}</p>
+                {/* <p>{post.caption}</p> */}
               </div>
             );
           })

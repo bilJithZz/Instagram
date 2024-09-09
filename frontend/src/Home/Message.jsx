@@ -1,45 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
-import axiosInstance from './axiosinstance'; // Adjust the path as needed
-import './Messege.css';
-
-const contacts = [
-  { id: 1, name: 'Harikrishna', image: 'https://images.pexels.com/photos/14727496/pexels-photo-14727496.jpeg' },
-  { id: 2, name: 'John Doe', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg' },
-  { id: 3, name: 'Jane Smith', image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg' },
-  { id: 4, name: 'Emily Johnson', image: 'https://images.pexels.com/photos/4586342/pexels-photo-4586342.jpeg' },
-  { id: 5, name: 'Michael Brown', image: 'https://images.pexels.com/photos/6316610/pexels-photo-6316610.jpeg' },
-];
+import axiosInstance from './axiosinstance'; 
+import './Messege.css'; 
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const ChatApp = () => {
   const [userId, setUserId] = useState(null);
-  const [selectedContact, setSelectedContact] = useState(contacts[0]);
-  const [messages, setMessages] = useState([]);
-
+  const [contacts, setContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [messages, setMessages] = useState([]); 
   const [newMessage, setNewMessage] = useState('');
-  console.log(newMessage)
   const socket = useRef(null);
+  const token = useSelector(state => state.auth.token);
 
   useEffect(() => {
-    
-    const fetchUserId = async () => {
+    const fetchUserAndContacts = async () => {
       try {
         const response = await axiosInstance.get('/me');
         setUserId(response.data.id);
+
+        const contactsResponse = await axiosInstance.get('/getAlluser');
+        console.log("Contacts fetched:", contactsResponse.data.user);
+        setContacts(contactsResponse.data.user);
+
+        if (contactsResponse.data.user.length > 0) {
+          setSelectedContact(contactsResponse.data.user[0]);
+        }
       } catch (error) {
-        console.error('Error fetching user ID:', error);
+        console.error('Error fetching user ID or contacts:', error);
       }
     };
 
-    fetchUserId();
+    fetchUserAndContacts();
   }, []);
 
   useEffect(() => {
     if (userId) {
-      socket.current = io('http://localhost:5000', {
-        query: { userId },
-      });
+      // Initialize socket connection
+      socket.current = io('http://localhost:5000');
 
+      // Handle incoming messages
       socket.current.on('newMessage', (message) => {
         if (message.receiverId === userId || message.senderId === userId) {
           setMessages((prevMessages) => [...prevMessages, message]);
@@ -47,31 +48,51 @@ const ChatApp = () => {
       });
 
       return () => {
-        socket.current.off('newMessage');
-        socket.current.disconnect();
+        if (socket.current) {
+          socket.current.off('newMessage');
+          socket.current.disconnect();
+        }
       };
     }
   }, [userId]);
 
   const handleSelectContact = (contact) => {
     setSelectedContact(contact);
+    setMessages([]); 
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && socket.current) {
-      const message = {
-        senderId: userId,
-        receiverId: selectedContact.id,
-        content: newMessage,
-      };
+      try {
+        const message = {
+          receiverId: selectedContact._id,
+          content: newMessage,
+          senderId: userId,
+        };
+       
+        await axios.post('http://localhost:5000/api/message/sendMessage', message, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          withCredentials: true 
+        });
 
-      socket.current.emit('sendMessage', message);
-      setNewMessage('');
+        socket.current.emit('sendMessage', message);
+
+        setNewMessage('');
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
 
   if (!userId) {
-    return <div>Loading...</div>; 
+    return <div>Loading user data...</div>;
+  }
+
+  if (!selectedContact) {
+    return <div>Select a contact to start a chat...</div>;
   }
 
   return (
@@ -80,27 +101,33 @@ const ChatApp = () => {
         <h2>Chats</h2>
         {contacts.map((contact) => (
           <div
-            key={contact.id}
-            className={`contact ${selectedContact.id === contact.id ? 'selected' : ''}`}
+            key={contact._id}
+            className={`contact ${selectedContact && selectedContact._id === contact._id ? 'selected' : ''}`}
             onClick={() => handleSelectContact(contact)}
           >
-            <img src={contact.image} alt={contact.name} />
-            <span>{contact.name}</span>
+            <img 
+              src={contact.profilepic || 'default-profile-pic.jpg'} 
+              alt={contact.username || 'Default Profile Picture'} 
+            />
+            <span>{contact.username}</span>
           </div>
         ))}
       </div>
 
       <div className="chat-area">
         <div className="chat-header">
-          <img src={selectedContact.image} alt={selectedContact.name} />
-          <span>{selectedContact.name}</span>
+          <img 
+            src={selectedContact?.profilepic || 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'} 
+            alt={selectedContact?.username || 'Default Profile Picture'} 
+          />
+          <span>{selectedContact?.username || 'No Contact Selected'}</span>
         </div>
 
         <div className="chat-messages">
           {messages
             .filter(message =>
               (message.senderId === userId || message.receiverId === userId) &&
-              (message.senderId === selectedContact.id || message.receiverId === selectedContact.id)
+              (message.senderId === selectedContact._id || message.receiverId === selectedContact._id)
             )
             .map((message, index) => (
               <div key={index} className={`chat-message ${message.senderId === userId ? 'sent' : 'received'}`}>

@@ -7,9 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const NewPost = () => {
   const [image, setImage] = useState(null);
   const [content, setCaption] = useState('');
-  const navigate=useNavigate()
-
-  
+  const navigate = useNavigate();
   const token = useSelector(state => state.auth.token);
 
   const handleImageChange = (e) => {
@@ -22,7 +20,11 @@ const NewPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
+    if (!image) {
+      console.error('No image selected');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('image', image); 
     formData.append('content', content);
@@ -34,17 +36,18 @@ const NewPost = () => {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}` 
+            'Authorization': `Bearer ${token}`
           },
-          withCredentials: true 
+          withCredentials: true // Include cookies with the request
         }
       );
- if(response.status===201)
- {
-  console.log('Response:', response.data);
-  navigate('/');
- }
-      
+
+      if (response.status === 201) {
+        console.log('Post created successfully:', response.data);
+        navigate('/');
+      } else {
+        console.error('Failed to create post:', response.status);
+      }
     } catch (err) {
       console.error('Error uploading post:', err);
     }
