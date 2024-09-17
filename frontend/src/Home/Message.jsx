@@ -11,8 +11,11 @@ const ChatApp = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [messages, setMessages] = useState([]); 
   const [newMessage, setNewMessage] = useState('');
+  const [loadingMessages, setLoadingMessages] = useState(false); // Track if messages are being loaded
+  const [hasMoreMessages, setHasMoreMessages] = useState(true); // Track if there are more messages to load
   const socket = useRef(null);
   const token = useSelector(state => state.auth.token);
+  const pageSize = 20; // Number of messages to fetch per request
 
   useEffect(() => {
     const fetchUserAndContacts = async () => {
@@ -21,7 +24,6 @@ const ChatApp = () => {
         setUserId(response.data.id);
 
         const contactsResponse = await axiosInstance.get('/getAlluser');
-        console.log("Contacts fetched:", contactsResponse.data.user);
         setContacts(contactsResponse.data.user);
 
         if (contactsResponse.data.user.length > 0) {
@@ -37,10 +39,8 @@ const ChatApp = () => {
 
   useEffect(() => {
     if (userId) {
-      // Initialize socket connection
       socket.current = io('http://localhost:5000');
 
-      // Handle incoming messages
       socket.current.on('newMessage', (message) => {
         if (message.receiverId === userId || message.senderId === userId) {
           setMessages((prevMessages) => [...prevMessages, message]);
@@ -56,13 +56,52 @@ const ChatApp = () => {
     }
   }, [userId]);
 
+  useEffect(() => {
+    if (selectedContact && userId) {
+      const fetchMessages = async () => {
+        if (loadingMessages) return; // Prevent multiple fetches at the same time
+        setLoadingMessages(true);
+
+        try {
+          const response = await axios.get(`http://localhost:5000/getMessages/${userId}/${selectedContact._id}?pageSize=${pageSize}`);
+          setMessages(response.data.messages);
+          setHasMoreMessages(response.data.hasMoreMessages); // Set flag based on response
+        } catch (error) {
+          console.error('Error fetching messages:', error);
+        } finally {
+          setLoadingMessages(false);
+        }
+      };
+
+      fetchMessages();
+    }
+  }, [selectedContact, userId]);
+
+  const loadMoreMessages = async () => {
+    if (!hasMoreMessages || loadingMessages) return; // Prevent loading if no more messages or if already loading
+
+    setLoadingMessages(true);
+    try {
+      const lastMessage = messages[messages.length - 1];
+      const response = await axios.get(`http://localhost:5000/getMessages/${userId}/${selectedContact._id}?pageSize=${pageSize}&before=${lastMessage.timestamp}`);
+      setMessages((prevMessages) => [...prevMessages, ...response.data.messages]);
+      setHasMoreMessages(response.data.hasMoreMessages); // Update flag based on response
+    } catch (error) {
+      console.error('Error loading more messages:', error);
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
+
   const handleSelectContact = (contact) => {
     setSelectedContact(contact);
-    setMessages([]); 
+    setMessages([]); // Clear messages when changing contacts
+    setHasMoreMessages(true); // Reset flag
+    loadMoreMessages(); // Fetch messages for the newly selected contact
   };
 
   const handleSendMessage = async () => {
-    if (newMessage.trim() !== '' && socket.current) {
+    if (newMessage.trim() !== '' && selectedContact) {
       try {
         const message = {
           receiverId: selectedContact._id,
@@ -79,7 +118,6 @@ const ChatApp = () => {
         });
 
         socket.current.emit('sendMessage', message);
-
         setNewMessage('');
       } catch (error) {
         console.error('Error sending message:', error);
@@ -99,19 +137,23 @@ const ChatApp = () => {
     <div className="chat-container">
       <div className="contact-list">
         <h2>Chats</h2>
-        {contacts.map((contact) => (
-          <div
-            key={contact._id}
-            className={`contact ${selectedContact && selectedContact._id === contact._id ? 'selected' : ''}`}
-            onClick={() => handleSelectContact(contact)}
-          >
-            <img 
-              src={contact.profilepic || 'default-profile-pic.jpg'} 
-              alt={contact.username || 'Default Profile Picture'} 
-            />
-            <span>{contact.username}</span>
-          </div>
-        ))}
+        {contacts.length > 0 ? (
+          contacts.map((contact) => (
+            <div
+              key={contact._id}
+              className={`contact ${selectedContact && selectedContact._id === contact._id ? 'selected' : ''}`}
+              onClick={() => handleSelectContact(contact)}
+            >
+              <img 
+                src={contact.profilepic || 'default-profile-pic.jpg'} 
+                alt={contact.username || 'Default Profile Picture'} 
+              />
+              <span>{contact.username}</span>
+            </div>
+          ))
+        ) : (
+          <div>No contacts available</div>
+        )}
       </div>
 
       <div className="chat-area">
@@ -124,27 +166,29 @@ const ChatApp = () => {
         </div>
 
         <div className="chat-messages">
-          {messages
-            .filter(message =>
-              (message.senderId === userId || message.receiverId === userId) &&
-              (message.senderId === selectedContact._id || message.receiverId === selectedContact._id)
-            )
-            .map((message, index) => (
-              <div key={index} className={`chat-message ${message.senderId === userId ? 'sent' : 'received'}`}>
-                <p>{message.content}</p>
-              </div>
-            ))}
+          {messages.map((message, index) => (
+            <div key={index} className={`chat-message ${message.senderId === userId ? 'sent' : 'received'}`}>
+              <p>{message.content}</p>
+            </div>
+          ))}
+          {loadingMessages && <div>Loading more messages...</div>}
         </div>
 
-        <div className="chat-input">
-          <input
-            type="text"
-            placeholder="Type a message..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-          />
-          <button onClick={handleSendMessage}>Send</button>
-        </div>
+        {hasMoreMessages && !loadingMessages && (
+          <button onClick={loadMoreMessages}>Load More Messages</button>
+        )}
+
+        {selectedContact && (
+          <div className="chat-input">
+            <input
+              type="text"
+              placeholder="Type a message..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
+            <button onClick={handleSendMessage}>Send</button>
+          </div>
+        )}
       </div>
     </div>
   );
