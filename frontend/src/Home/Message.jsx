@@ -15,7 +15,7 @@ const ChatApp = () => {
   const [hasMoreMessages, setHasMoreMessages] = useState(true); // Track if there are more messages to load
   const socket = useRef(null);
   const token = useSelector(state => state.auth.token);
-  const pageSize = 20; // Number of messages to fetch per request
+  const pageSize = 10; // Number of messages to fetch per request
 
   useEffect(() => {
     const fetchUserAndContacts = async () => {
@@ -64,6 +64,7 @@ const ChatApp = () => {
 
         try {
           const response = await axios.get(`http://localhost:5000/getMessages/${userId}/${selectedContact._id}?pageSize=${pageSize}`);
+        console.log({"mm":selectedContact._id})
           setMessages(response.data.messages);
           setHasMoreMessages(response.data.hasMoreMessages); // Set flag based on response
         } catch (error) {
